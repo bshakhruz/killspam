@@ -26,7 +26,7 @@ except Exception as _e:
 
 router = Router()
 
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.1-flash-lite"
 
 _client_cache: dict = {}  # sha256(key) -> genai.Client
 

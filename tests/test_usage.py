@@ -20,7 +20,7 @@ from spam_bot.core import usage
 
 def test_cost_usd_default_rates():
     # 1M in + 1M out at $0.30 / $2.50 -> $2.80
-    assert abs(usage.cost_usd("gemini-2.5-flash", 1_000_000, 1_000_000) - 2.80) < 1e-9
+    assert abs(usage.cost_usd("gemini-3.1-flash-lite", 1_000_000, 1_000_000) - 2.80) < 1e-9
 
 
 def test_cost_usd_unknown_model_falls_back_to_default():
@@ -29,9 +29,9 @@ def test_cost_usd_unknown_model_falls_back_to_default():
 
 def test_cost_usd_respects_overridden_pricing():
     saved = usage.PRICING.copy()
-    usage.PRICING["gemini-2.5-flash"] = (1.0, 2.0)
+    usage.PRICING["gemini-3.1-flash-lite"] = (1.0, 2.0)
     try:
-        assert abs(usage.cost_usd("gemini-2.5-flash", 1_000_000, 1_000_000) - 3.0) < 1e-9
+        assert abs(usage.cost_usd("gemini-3.1-flash-lite", 1_000_000, 1_000_000) - 3.0) < 1e-9
     finally:
         usage.PRICING.clear()
         usage.PRICING.update(saved)
@@ -59,9 +59,9 @@ def test_seconds_until_hour_rolls_to_tomorrow():
 # --- formatting ----------------------------------------------------------------
 
 def test_format_window_shows_model_tokens_and_cost():
-    rows = [(-100, "gemini-2.5-flash", 1000, 2000, 3000)]
+    rows = [(-100, "gemini-3.1-flash-lite", 1000, 2000, 3000)]
     out = usage.format_window(rows, "Yesterday")
-    assert "gemini-2.5-flash" in out
+    assert "gemini-3.1-flash-lite" in out
     assert "3,000 tokens" in out
     assert "$0.0053" in out          # 1000/1e6*0.3 + 2000/1e6*2.5
     assert "Total" in out
@@ -72,8 +72,8 @@ def test_format_window_empty_says_no_usage():
 
 
 def test_format_window_per_group_breaks_down_by_group():
-    rows = [(-100, "gemini-2.5-flash", 10, 10, 20),
-            (-200, "gemini-2.5-flash", 10, 10, 20)]
+    rows = [(-100, "gemini-3.1-flash-lite", 10, 10, 20),
+            (-200, "gemini-3.1-flash-lite", 10, 10, 20)]
     out = usage.format_window(rows, "Yesterday", per_group=True)
     assert "Group -100" in out and "Group -200" in out
 
@@ -84,9 +84,9 @@ def test_summary_aggregates_by_group_and_model():
     now = datetime.utcnow()
     with SessionLocal() as db:
         db.add_all([
-            TokenUsage(group_id=-555, model="gemini-2.5-flash",
+            TokenUsage(group_id=-555, model="gemini-3.1-flash-lite",
                        prompt_tokens=100, completion_tokens=200, total_tokens=300, created_at=now),
-            TokenUsage(group_id=-555, model="gemini-2.5-flash",
+            TokenUsage(group_id=-555, model="gemini-3.1-flash-lite",
                        prompt_tokens=50, completion_tokens=50, total_tokens=100, created_at=now),
         ])
         db.commit()
@@ -94,14 +94,14 @@ def test_summary_aggregates_by_group_and_model():
     rows = usage.summary(start, end, group_id=-555)
     assert len(rows) == 1
     gid, model, prompt, completion, total = rows[0]
-    assert (gid, model) == (-555, "gemini-2.5-flash")
+    assert (gid, model) == (-555, "gemini-3.1-flash-lite")
     assert (prompt, completion, total) == (150, 250, 400)
 
 
 def test_summary_excludes_rows_outside_window():
     old = datetime.utcnow() - timedelta(days=40)
     with SessionLocal() as db:
-        db.add(TokenUsage(group_id=-777, model="gemini-2.5-flash",
+        db.add(TokenUsage(group_id=-777, model="gemini-3.1-flash-lite",
                           prompt_tokens=9, completion_tokens=9, total_tokens=18, created_at=old))
         db.commit()
     start, end = usage.rolling_bounds_utc(7)
