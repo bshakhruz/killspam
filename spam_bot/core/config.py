@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(
+        dotenv_path=".env"
+    )
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -11,7 +13,7 @@ BASE_URL = os.getenv("BASE_URL")
 PORT = int(os.getenv("PORT", "8080"))
 
 # Gemini pricing ($ per 1M tokens) for cost estimates in /tokens + the daily report.
-# Defaults are gemini-2.5-flash public rates; override per environment if they change.
+# Defaults are gemini-3.1-flash-lite public rates; override per environment if they change.
 GEMINI_PRICE_IN = float(os.getenv("GEMINI_PRICE_IN", "0.30"))
 GEMINI_PRICE_OUT = float(os.getenv("GEMINI_PRICE_OUT", "2.50"))
 # Local hour (Asia/Tashkent, UTC+5, no DST) to DM the daily usage report.

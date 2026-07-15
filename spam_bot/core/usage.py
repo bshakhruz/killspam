@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 
 from .config import GEMINI_PRICE_IN, GEMINI_PRICE_OUT
 
-# $ per 1M tokens (input, output). gemini-2.5-flash defaults; env-overridable via config.
-PRICING = {"gemini-2.5-flash": (GEMINI_PRICE_IN, GEMINI_PRICE_OUT)}
-_DEFAULT_MODEL = "gemini-2.5-flash"
+# $ per 1M tokens (input, output). gemini-3.1-flash-lite defaults; env-overridable via config.
+PRICING = {"gemini-3.1-flash-lite": (GEMINI_PRICE_IN, GEMINI_PRICE_OUT)}
+_DEFAULT_MODEL = "gemini-3.1-flash-lite"
 
 _TASHKENT = timedelta(hours=5)            # Uzbekistan, no DST
 _REPORT_STATE_KEY = "last_token_report_date"

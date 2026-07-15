@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Per-group Gemini token accounting. Every classification call (message text and bios) records the model and token counts against the group whose BYOK key paid, so usage is attributable per owner.
 - `/tokens` command — shows usage for the previous day, last 7 days, and last 30 days with model name, total tokens, and estimated cost in USD. Run inside a group (admins) for that group; run in the operator's DM for an all-groups breakdown.
 - Daily usage report — every morning (~09:00 Asia/Tashkent, configurable via `REPORT_HOUR`) the operator gets an all-groups summary of the previous day, and each protected group's admins get their own group's numbers. Skips groups with no usage; guarded so a restart doesn't re-send.
-- Cost estimates use configurable Gemini pricing (`GEMINI_PRICE_IN` / `GEMINI_PRICE_OUT`, default $0.30 / $2.50 per 1M tokens for gemini-2.5-flash).
+- Cost estimates use configurable Gemini pricing (`GEMINI_PRICE_IN` / `GEMINI_PRICE_OUT`, default $0.30 / $2.50 per 1M tokens for gemini-3.1-flash-lite).
 
 ### Changed
 - 90-day data retention now also prunes old token-usage rows.
@@ -333,7 +333,7 @@ protection instantly, and switch on AI moderation with their own Gemini key.
 ## [0.4.3] - 2026-06-17
 
 ### Changed
-- Disabled `gemini-2.5-flash` thinking (`thinking_budget=0`) for classification. Benchmarked against real samples: ~2× faster (avg 1.4s → 0.7s on the model call) with identical 11/11 accuracy.
+- Disabled `gemini-3.1-flash-lite` thinking (`thinking_budget=0`) for classification. Benchmarked against real samples: ~2× faster (avg 1.4s → 0.7s on the model call) with identical 11/11 accuracy.
 
 ## [0.4.2] - 2026-06-17
 
@@ -348,7 +348,7 @@ protection instantly, and switch on AI moderation with their own Gemini key.
 ## [0.4.0] - 2026-06-17
 
 ### Changed
-- Replaced the two slow `gemini-2.5-pro` calls (ad + inappropriate) with a **single `gemini-2.5-flash` call** using one unified classifier. Cuts per-message latency from ~35–44s to a few seconds and halves API calls.
+- Replaced the two slow `gemini-2.5-pro` calls (ad + inappropriate) with a **single `gemini-3.1-flash-lite` call** using one unified classifier. Cuts per-message latency from ~35–44s to a few seconds and halves API calls.
 - Unified prompt now also detects **adult/sexual-content solicitation** (previously fell between the ad and insult classifiers and was missed) and explicitly de-obfuscates mixed Latin/Cyrillic, char-spacing, and broken grammar. Returns a `category`: advertisement / adult / inappropriate.
 
 ### Added

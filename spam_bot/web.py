@@ -25,7 +25,7 @@ def validate_gemini_key(key: str) -> bool:
     try:
         client = genai.Client(api_key=key)
         client.models.generate_content(
-            model="gemini-2.5-flash", contents="ping",
+            model="gemini-3.1-flash-lite", contents="ping",
             config={"thinking_config": {"thinking_budget": 0}})
         return True
     except Exception as e:
